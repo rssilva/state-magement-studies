@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 // import { addUser, removeUser } from '../store/users.ts'
-import { useMachine } from '@xstate/react'
-import { usersMachine } from '../machines/users.ts'
+// import { useMachine } from '@xstate/react'
+// import { usersMachine } from '../machines/users.ts'
+import { useStore } from '../store/zu-store.ts'
 
 function UserCard({ user, onClickRemove }) {
   return (
@@ -14,26 +15,22 @@ function UserCard({ user, onClickRemove }) {
 
 export function TasksPage(): React.ReactElement {
   const [value, setValue] = useState('')
-  const [current, send] = useMachine(usersMachine, { devTools: true })
+  // const [current, send] = useMachine(usersMachine, { devTools: true })
 
-  function onRemove(id) {
-    send('removing', {
-      id,
-    })
-  }
+  // const users = useStore((state) => state.users)
+  const { users, removeUser, addUser } = useStore((state) => state)
+
+  console.log(users.length)
 
   return (
     <div>
       <div>
-        {current.value}
         <input onKeyUp={(ev) => setValue(ev.target.value)} />
         <button
           onClick={() =>
-            send('adding', {
-              user: {
-                name: value,
-                id: new Date().getTime(),
-              },
+            addUser({
+              name: value,
+              id: new Date().getTime(),
             })
           }
         >
@@ -41,12 +38,12 @@ export function TasksPage(): React.ReactElement {
         </button>
       </div>
       <div>
-        {current.context.users.map((user) => {
+        {users.map((user) => {
           return (
             <UserCard
               key={user.id}
               user={user}
-              onClickRemove={(id) => onRemove(id)}
+              onClickRemove={(id) => removeUser(id)}
             />
           )
         })}
