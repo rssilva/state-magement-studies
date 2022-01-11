@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { addUser, removeUser } from '../store/users.ts'
+// import { addUser, removeUser } from '../store/users.ts'
+import { useMachine } from '@xstate/react'
+import { usersMachine } from '../machines/users.ts'
 
 function UserCard({ user, onClickRemove }) {
   return (
@@ -12,25 +13,35 @@ function UserCard({ user, onClickRemove }) {
 }
 
 export function TasksPage(): React.ReactElement {
-  const dispatch = useDispatch()
   const [value, setValue] = useState('')
-
-  const users = useSelector((state) => {
-    return state.users.users
-  })
+  const [current, send] = useMachine(usersMachine, { devTools: true })
 
   function onRemove(id) {
-    dispatch(removeUser(id))
+    send('removing', {
+      id,
+    })
   }
 
   return (
     <div>
       <div>
+        {current.value}
         <input onKeyUp={(ev) => setValue(ev.target.value)} />
-        <button onClick={() => dispatch(addUser(value))}>Add</button>
+        <button
+          onClick={() =>
+            send('adding', {
+              user: {
+                name: value,
+                id: new Date().getTime(),
+              },
+            })
+          }
+        >
+          Add
+        </button>
       </div>
       <div>
-        {users.map((user) => {
+        {current.context.users.map((user) => {
           return (
             <UserCard
               key={user.id}
@@ -39,8 +50,6 @@ export function TasksPage(): React.ReactElement {
             />
           )
         })}
-        {/* <button onClick={() => dispatch(addUser())}>alow</button>
-        <button onClick={() => dispatch(decrement())}>down</button> */}
       </div>
     </div>
   )
