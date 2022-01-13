@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-// import { addUser, removeUser } from '../store/users.ts'
 import { useMachine } from '@xstate/react'
 import { usersMachine } from '../machines/users.ts'
 
@@ -25,7 +24,6 @@ export function TasksPage(): React.ReactElement {
   return (
     <div>
       <div>
-        {current.value}
         <input onKeyUp={(ev) => setValue(ev.target.value)} />
         <button
           onClick={() =>

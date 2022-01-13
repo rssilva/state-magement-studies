@@ -7,7 +7,7 @@ export const usersMachine = createMachine(
     context: {
       users: [
         {
-          name: 'Laudrup',
+          name: 'Rafael',
           id: 1,
         },
       ],
