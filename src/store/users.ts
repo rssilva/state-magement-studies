@@ -1,7 +1,12 @@
 import { createSlice, createAction } from '@reduxjs/toolkit'
 
 const initialState = {
-  users: [],
+  users: [
+    {
+      name: 'Rafael',
+      id: 1,
+    },
+  ],
 }
 
 export const usersSlice = createSlice({
